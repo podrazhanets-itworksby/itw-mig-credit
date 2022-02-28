@@ -19,13 +19,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		config.enableSimpleBroker("/topic");
-		config.setApplicationDestinationPrefixes("/migApp");
+		config.setApplicationDestinationPrefixes("/app");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry
-				.addEndpoint("api")
+				.addEndpoint("/ws")
 				.setAllowedOrigins("http://localhost:4200")
 				.withSockJS();
 	}
@@ -33,10 +33,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
 		DefaultContentTypeResolver resolver = new DefaultContentTypeResolver();
-		resolver.setDefaultMimeType(MimeTypeUtils.APPLICATION_JSON);
+		resolver.setDefaultMimeType(MimeTypeUtils.TEXT_HTML);
 		MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
 		converter.setObjectMapper(new ObjectMapper());
 		converter.setContentTypeResolver(resolver);
+
 		messageConverters.add(converter);
 		return false;
 	}

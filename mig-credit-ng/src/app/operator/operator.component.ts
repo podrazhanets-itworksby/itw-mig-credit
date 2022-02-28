@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { NewData } from "src/app/shared/model/new-data.model";
+import { WebSocketAPI } from "src/app/shared/utils/websocket-api";
 
 @Component({
   selector: "itw-operator",
@@ -7,22 +8,19 @@ import { NewData } from "src/app/shared/model/new-data.model";
   styleUrls: ["./operator.component.scss"],
 })
 export class OperatorComponent implements OnInit {
-  private ws: WebSocket;
   private sessionId: string;
+  webSocketAPI: WebSocketAPI;
 
   public ngOnInit(): void {
-    this.sessionId = "1234";
-    this.ws = new WebSocket(`ws://localhost:9229/api/ws/update/websocket`);
+    this.webSocketAPI = new WebSocketAPI();
+    this.webSocketAPI._connect();
   }
 
   public sendData(): void {
-    const data = new NewData({
-      fieldName: "test",
-      fieldValue: "test value",
-      sessionId: "1234",
-    });
-    this.ws.send(
-      '{fieldName: "test", fieldValue: "test value", sessionId: "1234"}'
-    );
+    const data = new NewData();
+    data.fieldName = "lastname";
+    data.fieldValue = "Петров";
+    data.sessionId = "1234";
+    this.webSocketAPI._send(JSON.stringify(data));
   }
 }

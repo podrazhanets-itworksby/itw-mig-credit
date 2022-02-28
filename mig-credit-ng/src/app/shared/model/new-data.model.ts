@@ -1,11 +1,11 @@
 export class NewData {
   public sessionId: string;
   public fieldName: string;
-  public fieldValue: any;
+  public fieldValue: string;
 
-  public constructor(private data: any = {}) {
-    this.sessionId = data.sessionId;
-    this.fieldName = data.fieldName;
-    this.fieldValue = data.fieldValue;
+  public constructor(newData: any = {}) {
+    this.sessionId = newData.sessionId;
+    this.fieldName = newData.fieldName;
+    this.fieldValue = newData.fieldValue;
   }
 }
