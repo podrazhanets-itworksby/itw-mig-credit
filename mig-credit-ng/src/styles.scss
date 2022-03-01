@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+	font-family: Montserrat;
+	font-style: normal;
+	color: #30404d;
+}
+
+.field-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.divider {
+	border-bottom: 1px solid #cacaca;
+	height: 1px;
+	width: 100%;
+}
+
+.p-dialog .p-dialog-footer button {
+	background: #ffffff;
+	border: 1px solid #38b2ed;
+	&:focus {
+		background: #38b2ed;
+	}
+}

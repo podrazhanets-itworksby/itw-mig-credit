@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
 				.addResolver(new PathResourceResolver() {
 					@Override
 					protected Resource getResource(String resourcePath, Resource location) throws IOException {
-						System.out.println(String.format("resourcePath=[%s], location=[%s]", resourcePath, location));
+						System.out.printf("resourcePath=[%s], location=[%s]%n", resourcePath, location);
 						Resource requestedResource = location.createRelative(resourcePath);
 
 						return requestedResource.exists() && requestedResource.isReadable() ? requestedResource

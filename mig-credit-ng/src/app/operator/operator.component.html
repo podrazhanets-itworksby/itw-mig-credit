@@ -1,1 +1,14 @@
-<button type="button" (click)="sendData()">Send data</button>
+<div class="main-container">
+	<div>
+		<iframe
+			src="http://192.168.0.220:4200/operator"
+			title="operator"
+			allow="microphone"
+			height="530"
+			width="660"
+		></iframe>
+	</div>
+	<div class="app-form-container">
+		<mig-application-form [editMode]="true" sessionId="1234"></mig-application-form>
+	</div>
+</div>

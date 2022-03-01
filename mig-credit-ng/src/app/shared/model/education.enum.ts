@@ -1,0 +1,5 @@
+export enum EducationEnum {
+	SECONDARY = 'SECONDARY',
+	INCOMPLETE_HIGHER = 'INCOMPLETE_HIGHER',
+	HIGHER = 'HIGHER',
+}

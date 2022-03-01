@@ -1,0 +1,342 @@
+<p-confirmDialog
+	header="Подтверждение"
+	icon="pi pi-exclamation-triangle"
+	acceptLabel="Да"
+	rejectLabel="Нет"
+	key="cancel"
+	defaultFocus="reject"
+></p-confirmDialog>
+<p-confirmDialog
+	header="Подтверждение"
+	icon="pi pi-exclamation-triangle"
+	acceptLabel="Да"
+	rejectLabel="Нет"
+	key="save"
+	defaultFocus="accept"
+></p-confirmDialog>
+
+<form [formGroup]="form" autocomplete="off" class="application-form" (ngSubmit)="submit()">
+	<fieldset class="fieldset">
+		<h3>Личные данные</h3>
+		<div class="divider"></div>
+
+		<div class="fieldset-flex-container">
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('lastname') }">
+				<label id="lastnameL" for="lastname">Фамилия</label>
+				<input
+					formControlName="lastname"
+					type="text"
+					id="lastname"
+					name="lastname"
+					required
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('lastname')"
+				/>
+				<small class="p-error" *ngIf="hasError('lastname')">{{ decodeError('lastname') }}</small>
+			</div>
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('firstname') }">
+				<label id="firstnameL" for="firstname">Имя</label>
+				<input
+					formControlName="firstname"
+					type="text"
+					id="firstname"
+					name="firstname"
+					required
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('firstname')"
+				/>
+				<small class="p-error" *ngIf="hasError('firstname')">{{ decodeError('firstname') }}</small>
+			</div>
+		</div>
+
+		<div class="field-container" [ngClass]="{ 'with-error': hasError('patronymic') }">
+			<label id="patronymicL" for="patronymic">Отчество</label>
+			<input
+				formControlName="patronymic"
+				type="text"
+				id="patronymic"
+				name="patronymic"
+				required
+				autocomplete="off"
+				pInputText
+				(change)="sendNewData('patronymic')"
+			/>
+			<small class="p-error" *ngIf="hasError('patronymic')">{{ decodeError('patronymic') }}</small>
+		</div>
+
+		<div class="fieldset-flex-container">
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('sex') }">
+				<label id="sexL" for="sex">Пол</label>
+				<p-dropdown
+					id="sex"
+					[options]="sex"
+					formControlName="sex"
+					placeholder="Выберите пол"
+					(onChange)="sendNewData('sex')"
+				></p-dropdown>
+				<small class="p-error" *ngIf="hasError('sex')">{{ decodeError('sex') }}</small>
+			</div>
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('birthday') }">
+				<label id="birthdayL" for="birthday">Дата рождения</label>
+				<p-calendar
+					id="birthday"
+					[locale]="locale"
+					formControlName="birthday"
+					[monthNavigator]="true"
+					[yearNavigator]="true"
+					[showIcon]="true"
+					[yearRange]="birthdayYearRange"
+					[maxDate]="birthdayMaxDate"
+					[dateFormat]="locale.dateFormat"
+					[placeholder]="datePlaceholder"
+					appendTo="body"
+					(onSelect)="sendNewData('birthday')"
+					(onInput)="inputDate($event, 'birthday')"
+					useUtc
+				></p-calendar>
+				<small class="p-error" *ngIf="hasError('birthday')">{{ decodeError('birthday') }}</small>
+			</div>
+		</div>
+
+		<h3>Документы</h3>
+		<div class="divider"></div>
+
+		<div class="fieldset-flex-container">
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('document') }">
+				<label id="documentL" for="document">Документ</label>
+				<p-dropdown
+					id="document"
+					[options]="docType"
+					formControlName="document"
+					placeholder="Выберите тип документа"
+					(onChange)="sendNewData('document')"
+				></p-dropdown>
+				<small class="p-error" *ngIf="hasError('document')">{{ decodeError('document') }}</small>
+			</div>
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('persNumber') }">
+				<label id="persNumberL" for="persNumber">Личный номер</label>
+				<input
+					formControlName="persNumber"
+					type="text"
+					id="persNumber"
+					name="persNumber"
+					required
+					autocomplete="off"
+					pInputText
+					mask="0000000S000SS0"
+					(change)="sendNewData('persNumber')"
+				/>
+				<small class="p-error" *ngIf="hasError('persNumber')">{{ decodeError('persNumber') }}</small>
+			</div>
+		</div>
+
+		<div class="fieldset-flex-container">
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('docNumber') }">
+				<label id="docNumberL" for="docNumber">Номер документа</label>
+				<input
+					formControlName="docNumber"
+					type="text"
+					id="docNumber"
+					name="docNumber"
+					required
+					autocomplete="off"
+					pInputText
+					mask="SS0000000"
+					(change)="sendNewData('docNumber')"
+				/>
+				<small class="p-error" *ngIf="hasError('docNumber')">{{ decodeError('docNumber') }}</small>
+			</div>
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('validTo') }">
+				<label id="validToL" for="validTo">Действителен до</label>
+				<p-calendar
+					id="validTo"
+					[locale]="locale"
+					formControlName="validTo"
+					[monthNavigator]="true"
+					[yearNavigator]="true"
+					[showIcon]="true"
+					[yearRange]="validToYearRange"
+					[minDate]="validToMinDate"
+					[dateFormat]="locale.dateFormat"
+					appendTo="body"
+					[placeholder]="datePlaceholder"
+					(onSelect)="sendNewData('validTo')"
+					(onInput)="inputDate($event, 'validTo')"
+					useUtc
+				></p-calendar>
+				<small class="p-error" *ngIf="hasError('validTo')">{{ decodeError('validTo') }}</small>
+			</div>
+		</div>
+
+		<h3>Образование</h3>
+		<div class="divider"></div>
+		<div class="field-container" [ngClass]="{ 'with-error': hasError('education') }">
+			<label id="educationL" for="education">Образование</label>
+			<p-dropdown
+				id="education"
+				[options]="education"
+				formControlName="education"
+				placeholder="Выберите образование"
+				(onChange)="sendNewData('education')"
+			></p-dropdown>
+			<small class="p-error" *ngIf="hasError('education')">{{ decodeError('education') }}</small>
+		</div>
+
+		<h3>Прописка</h3>
+		<div class="divider"></div>
+		<div class="field-container" [ngClass]="{ 'with-error': hasError('address') }">
+			<label id="addressL" for="address">Адрес прописки</label>
+			<input
+				formControlName="address"
+				type="text"
+				id="address"
+				name="address"
+				required
+				autocomplete="off"
+				pInputText
+				(change)="sendNewData('address')"
+			/>
+			<small class="p-error" *ngIf="hasError('address')">{{ decodeError('address') }}</small>
+		</div>
+
+		<h3>Контакты</h3>
+		<div class="divider"></div>
+		<div class="fieldset-flex-container">
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('phone') }">
+				<label id="phoneL" or="phone">Телефон</label>
+				<input
+					formControlName="phone"
+					type="text"
+					id="phone"
+					name="phone"
+					required
+					autocomplete="off"
+					pInputText
+					prefix="+375"
+					mask="(00) 000-00-00"
+					(change)="sendNewData('phone')"
+				/>
+				<small class="p-error" *ngIf="hasError('phone')">{{ decodeError('phone') }}</small>
+			</div>
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('phone2') }">
+				<label id="phone2L" for="phone2">Второй телефон</label>
+				<input
+					formControlName="phone2"
+					type="text"
+					id="phone2"
+					name="phone2"
+					required
+					autocomplete="off"
+					pInputText
+					prefix="+375"
+					mask="(00) 000-00-00"
+					(change)="sendNewData('phone2')"
+				/>
+				<small class="p-error" *ngIf="hasError('phone2')">{{ decodeError('phone2') }}</small>
+			</div>
+		</div>
+
+		<h3>Информация о семье</h3>
+		<div class="divider"></div>
+		<div class="fieldset-flex-container">
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('maritalStatus') }">
+				<label id="maritalStatusL" for="maritalStatus">Семейное положение</label>
+				<p-dropdown
+					id="maritalStatus"
+					[options]="maritalStatus"
+					formControlName="maritalStatus"
+					placeholder="Выберите значение"
+					(onChange)="sendNewData('maritalStatus')"
+				></p-dropdown>
+				<small class="p-error" *ngIf="hasError('maritalStatus')">{{ decodeError('maritalStatus') }}</small>
+			</div>
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('children') }">
+				<label id="childrenL" for="children">Иждивенцы(в том числе дети до 18-ти лет)</label>
+				<p-dropdown
+					id="children"
+					[options]="children"
+					formControlName="children"
+					placeholder="Выберите значение"
+					(onChange)="sendNewData('children')"
+				></p-dropdown>
+				<small class="p-error" *ngIf="hasError('children')">{{ decodeError('children') }}</small>
+			</div>
+		</div>
+
+		<h3>Информация о работе</h3>
+		<div class="divider"></div>
+		<div class="field-container" [ngClass]="{ 'with-error': hasError('organization') }">
+			<label id="organizationL" for="organization">Наименование организации</label>
+			<input
+				formControlName="organization"
+				type="text"
+				id="organization"
+				name="organization"
+				required
+				autocomplete="off"
+				pInputText
+				(change)="sendNewData('organization')"
+			/>
+			<small class="p-error" *ngIf="hasError('organization')">{{ decodeError('organization') }}</small>
+		</div>
+
+		<div class="field-container" [ngClass]="{ 'with-error': hasError('position') }">
+			<label id="positionL" for="position">Наименование должности</label>
+			<input
+				formControlName="position"
+				type="text"
+				id="position"
+				name="position"
+				required
+				autocomplete="off"
+				pInputText
+				(change)="sendNewData('position')"
+			/>
+			<small class="p-error" *ngIf="hasError('position')">{{ decodeError('position') }}</small>
+		</div>
+
+		<div class="fieldset-flex-container">
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('experience') }">
+				<label id="experienceL" for="experience">Время работы в данной организации</label>
+				<p-dropdown
+					id="experience"
+					[options]="experience"
+					formControlName="experience"
+					placeholder="Выберите значение"
+					(onChange)="sendNewData('experience')"
+				></p-dropdown>
+				<small class="p-error" *ngIf="hasError('experience')">{{ decodeError('experience') }}</small>
+			</div>
+			<div class="field-container" [ngClass]="{ 'with-error': hasError('averageIncome') }">
+				<label id="averageIncomeL" for="averageIncome">Среднемесячный доход заявителя</label>
+				<input
+					formControlName="averageIncome"
+					type="text"
+					id="averageIncome"
+					name="averageIncome"
+					required
+					autocomplete="off"
+					pInputText
+					mask="separator.2"
+					thousandSeparator=" "
+					(change)="sendNewData('averageIncome')"
+				/>
+				<small class="p-error" *ngIf="hasError('averageIncome')">{{ decodeError('averageIncome') }}</small>
+			</div>
+		</div>
+	</fieldset>
+	<div *ngIf="editMode" class="action-container">
+		<div class="buttons-container">
+			<div class="button-wrapper">
+				<button type="button" class="p-button-outlined" (click)="confirmSave()" pButton>Схранить заявку</button>
+			</div>
+			<div class="button-wrapper">
+				<button type="button" class="p-button-outlined p-button-danger" (click)="confirmCancel()" pButton>
+					Отмена заявки
+				</button>
+			</div>
+		</div>
+	</div>
+</form>
