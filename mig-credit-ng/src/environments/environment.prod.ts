@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  webSocketEndPoint: "http://localhost:9229/ws",
+	production: true,
+	webSocketEndPoint: 'https://192.168.0.220:9229/wss',
 };

@@ -142,6 +142,13 @@ export class ApplicationFormComponent implements OnInit {
 	}
 
 	public confirmSave(): void {
+		if (this.form.invalid) {
+			this.form.markAllAsTouched();
+			Object.keys(this.form.controls).forEach((mnemo) => {
+				this.hasError(mnemo);
+			});
+			return;
+		}
 		this.confirmationService.confirm({
 			key: 'save',
 			message: 'Вы уверены, что хотите сохранить заявку?',
