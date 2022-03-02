@@ -64,19 +64,30 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "mig-credit-ng:build",
-            "host": "192.168.0.220"
+            "browserTarget": "mig-credit-ng:build"
           },
           "configurations": {
             "production": {
               "browserTarget": "mig-credit-ng:build:production"
+            },
+            "dev": {
+              "browserTarget": "mig-credit-ng:build:dev"
             }
+            
           }
         },
         "extract-i18n": {

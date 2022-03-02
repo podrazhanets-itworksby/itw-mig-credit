@@ -19,18 +19,53 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.liquibase:liquibase-core'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.3'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.3'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.3'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:2.6.3'
+    implementation 'org.liquibase:liquibase-core:4.7.1'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.3'
+    runtimeOnly 'org.postgresql:postgresql:42.3.2'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
+    testImplementation 'org.springframework.security:spring-security-test:5.5.1'
 }
+
+jar {
+    from '../mig-credit-ng/dist/mig-credit-ng' into 'static'
+}
+
+bootJar {
+    bootInf {
+        into('resources/static') {
+            from('../mig-credit-ng/dist/mig-credit-ng')
+        }
+    }
+}
+
+task updateFrontDependency(type: Exec, group: "Front Build", description: "npm install") {
+    workingDir '../mig-credit-ng'
+    commandLine 'cmd', '/c', 'npm install'
+
+    standardOutput = new ByteArrayOutputStream()
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
+
+task buildFront(type: Exec, group: "Front Build", description: "run build") {
+    workingDir '../mig-credit-ng'
+    commandLine 'cmd', '/c', 'npm run build'
+
+    standardOutput = new ByteArrayOutputStream()
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
+
+buildFront.dependsOn updateFrontDependency
+bootJar.dependsOn buildFront
 
 tasks.named('test') {
     useJUnitPlatform()

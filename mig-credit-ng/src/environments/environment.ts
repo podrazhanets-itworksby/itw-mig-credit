@@ -2,11 +2,13 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
+import { EnvironmentModel } from 'src/environments/models/environment-model';
+
+export const environment: EnvironmentModel = {
 	production: false,
-	host: 'https://192.168.0.220:9229',
-	webSocketEndPoint: 'https://192.168.0.220:9229/wss',
-	videoCallEndpoint: 'https://192.168.0.220:58468',
+	host: 'http://localhost:9229',
+	webSocketEndPoint: 'http://localhost:9229/wss',
+	videoCallEndpoint: 'http://localhost:58468',
 };
 
 /*

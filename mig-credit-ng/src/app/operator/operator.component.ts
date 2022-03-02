@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MessageService } from 'primeng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -14,11 +15,18 @@ import { environment } from 'src/environments/environment';
 })
 export class OperatorComponent implements OnInit, OnDestroy {
 	public sessionId: string;
+	public videoCallEndpoint: SafeUrl;
 
 	private readonly destroy$: Subject<void>;
 
-	constructor(private operatorService: OperatorService, private messageService: MessageService) {
+	constructor(
+		private operatorService: OperatorService,
+		private messageService: MessageService,
+		private sanitizer: DomSanitizer
+	) {
 		this.destroy$ = new Subject<void>();
+		this.videoCallEndpoint = sanitizer.bypassSecurityTrustResourceUrl(environment.videoCallEndpoint + '/operator');
+		console.log(this.videoCallEndpoint);
 	}
 
 	public ngOnInit(): void {

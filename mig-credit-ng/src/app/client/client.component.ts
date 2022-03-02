@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -8,7 +9,11 @@ import { environment } from 'src/environments/environment';
 })
 export class ClientComponent implements OnInit {
 	public sessionId: string;
-	public constructor() {}
+	public videoCallEndpoint: SafeUrl;
+
+	public constructor(private sanitizer: DomSanitizer) {
+		this.videoCallEndpoint = sanitizer.bypassSecurityTrustResourceUrl(environment.videoCallEndpoint + '/operator');
+	}
 
 	public ngOnInit(): void {
 		window.addEventListener('message', (event) => {

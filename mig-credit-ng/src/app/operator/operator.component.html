@@ -1,13 +1,7 @@
 <p-toast position="bottom-center" key="responseInfo"></p-toast>
 <div class="main-container">
 	<div>
-		<iframe
-			src="https://192.168.0.220:58468/operator"
-			title="operator"
-			allow="microphone"
-			height="530"
-			width="660"
-		></iframe>
+		<iframe [src]="videoCallEndpoint" title="operator" allow="microphone" height="530" width="660"></iframe>
 	</div>
 	<div class="app-form-container">
 		<mig-application-form
