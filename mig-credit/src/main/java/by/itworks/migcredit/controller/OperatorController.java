@@ -1,9 +1,17 @@
 package by.itworks.migcredit.controller;
 
+import by.itworks.migcredit.dto.ApplicationDto;
 import by.itworks.migcredit.service.OperatorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "api")
@@ -11,21 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OperatorController {
 	private final OperatorService operatorService;
 
-//	@RequestMapping(value = "/session/{sessionId}/get-data-to-join", method = RequestMethod.GET)
-//	public ResponseEntity<SessionData> getDataToJoinTheSession(@PathVariable("sessionId") UUID sessionId) {
-//		return new ResponseEntity<>(operatorService.getDataToJoinTheSession(sessionId), HttpStatus.OK);
-//	}
-//
-//	@RequestMapping(value = "/session/{sessionId}/disconnect-client", method = RequestMethod.POST)
-//	public ResponseEntity<Void> disconnectClientFromSession(@PathVariable("sessionId") UUID sessionId) {
-//		operatorService.disconnectClientFromSession(sessionId);
-//		return new ResponseEntity<>(HttpStatus.OK);
-//	}
-//
-//	@RequestMapping(value = "/session/{sessionId}/disconnect-listener", method = RequestMethod.GET)
-//	public SseEmitter setDisconnectListener(@PathVariable("sessionId") UUID sessionId) {
-//		SseEmitter sse = new SseEmitter();
-//		operatorService.setDisconnectListener(sessionId, sse);
-//		return sse;
-//	}
+	@RequestMapping(value = "/operator/{sessionId}/save-application", method = RequestMethod.POST)
+	public ResponseEntity<Void> disconnectClientFromSession(@PathVariable("sessionId") UUID sessionId, @RequestBody ApplicationDto application) {
+		operatorService.saveApplication(application, sessionId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 }

@@ -1,0 +1,96 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet author="Podrazhanets.N" id="application_01">
+        <createTable tableName="application">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_application_id"/>
+            </column>
+
+            <column name="session_id" type="UUID" remarks="Идентификатор сессии">
+                <constraints primaryKey="true" primaryKeyName="pk_company"/>
+            </column>
+
+            <column name="firstname" type="VARCHAR(30)" remarks="Имя клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lastname" type="VARCHAR(30)" remarks="Фамилия клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="patronymic" type="VARCHAR(30)" remarks="Отчество клиента"/>
+
+            <column name="sex" type="VARCHAR(6)" remarks="Пол клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="birthday" type="DATE" remarks="Дата рождения клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="document" type="VARCHAR(13)" remarks="Тип документа предоставленного клиентом">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="pers_number" type="VARCHAR(14)" remarks="Личный номер клиента взятый из документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_number" type="VARCHAR(9)" remarks="Номер документа клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="valid_to" type="DATE" remarks="Срок действия документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="education" type="VARCHAR(17)" remarks="Образование клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="address" type="VARCHAR(255)" remarks="Адрес прописки клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="phone" type="VARCHAR(13)" remarks="Номер телефона клиента">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="phone2" type="VARCHAR(13)" remarks="Второй номер телефона клиента"/>
+
+            <column name="marital_status" type="VARCHAR(11)" remarks="Семейное положение">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="children" type="VARCHAR(15)" remarks="Количество детей">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="organization" type="VARCHAR(255)"
+                    remarks="Наименование организации в которой работает клиент">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="position" type="VARCHAR(255)" remarks="Должность клиента в организации">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="experience" type="VARCHAR(13)" remarks="Стаж работы в организации">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="average_income" type="NUMERIC(19,2)" remarks="Среднемесячный доход">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP WITH TIME ZONE" remarks="Дата и время создания заявки в системе">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

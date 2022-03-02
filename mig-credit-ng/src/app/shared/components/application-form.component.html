@@ -17,8 +17,10 @@
 
 <form [formGroup]="form" autocomplete="off" class="application-form" (ngSubmit)="submit()">
 	<fieldset class="fieldset">
-		<h3>Личные данные</h3>
-		<div class="divider"></div>
+		<div>
+			<div class="unit-header">Личные данные</div>
+			<div class="divider"></div>
+		</div>
 
 		<div class="fieldset-flex-container">
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('lastname') }">
@@ -58,7 +60,6 @@
 				type="text"
 				id="patronymic"
 				name="patronymic"
-				required
 				autocomplete="off"
 				pInputText
 				(change)="sendNewData('patronymic')"
@@ -100,8 +101,10 @@
 			</div>
 		</div>
 
-		<h3>Документы</h3>
-		<div class="divider"></div>
+		<div>
+			<div class="unit-header">Документы</div>
+			<div class="divider"></div>
+		</div>
 
 		<div class="fieldset-flex-container">
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('document') }">
@@ -170,8 +173,10 @@
 			</div>
 		</div>
 
-		<h3>Образование</h3>
-		<div class="divider"></div>
+		<div>
+			<div class="unit-header">Образование</div>
+			<div class="divider"></div>
+		</div>
 		<div class="field-container" [ngClass]="{ 'with-error': hasError('education') }">
 			<label id="educationL" for="education">Образование</label>
 			<p-dropdown
@@ -184,8 +189,10 @@
 			<small class="p-error" *ngIf="hasError('education')">{{ decodeError('education') }}</small>
 		</div>
 
-		<h3>Прописка</h3>
-		<div class="divider"></div>
+		<div>
+			<div class="unit-header">Прописка</div>
+			<div class="divider"></div>
+		</div>
 		<div class="field-container" [ngClass]="{ 'with-error': hasError('address') }">
 			<label id="addressL" for="address">Адрес прописки</label>
 			<input
@@ -201,8 +208,10 @@
 			<small class="p-error" *ngIf="hasError('address')">{{ decodeError('address') }}</small>
 		</div>
 
-		<h3>Контакты</h3>
-		<div class="divider"></div>
+		<div>
+			<div class="unit-header">Контакты</div>
+			<div class="divider"></div>
+		</div>
 		<div class="fieldset-flex-container">
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('phone') }">
 				<label id="phoneL" or="phone">Телефон</label>
@@ -227,7 +236,6 @@
 					type="text"
 					id="phone2"
 					name="phone2"
-					required
 					autocomplete="off"
 					pInputText
 					prefix="+375"
@@ -238,8 +246,10 @@
 			</div>
 		</div>
 
-		<h3>Информация о семье</h3>
-		<div class="divider"></div>
+		<div>
+			<div class="unit-header">Информация о семье</div>
+			<div class="divider"></div>
+		</div>
 		<div class="fieldset-flex-container">
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('maritalStatus') }">
 				<label id="maritalStatusL" for="maritalStatus">Семейное положение</label>
@@ -265,8 +275,10 @@
 			</div>
 		</div>
 
-		<h3>Информация о работе</h3>
-		<div class="divider"></div>
+		<div>
+			<div class="unit-header">Информация о работе</div>
+			<div class="divider"></div>
+		</div>
 		<div class="field-container" [ngClass]="{ 'with-error': hasError('organization') }">
 			<label id="organizationL" for="organization">Наименование организации</label>
 			<input
@@ -329,14 +341,25 @@
 	</fieldset>
 	<div *ngIf="editMode" class="action-container">
 		<div class="buttons-container">
-			<div class="button-wrapper">
-				<button type="button" class="p-button-outlined" (click)="confirmSave()" pButton>Схранить заявку</button>
-			</div>
-			<div class="button-wrapper">
-				<button type="button" class="p-button-outlined p-button-danger" (click)="confirmCancel()" pButton>
-					Отмена заявки
-				</button>
-			</div>
+			<ng-container *ngIf="!clientAgree">
+				<div class="button-wrapper">
+					<button type="button" class="p-button-outlined" (click)="confirmAgreement()" pButton>
+						Клиент подтвердил валидность введенных вами данных
+					</button>
+				</div>
+			</ng-container>
+			<ng-container *ngIf="clientAgree">
+				<div class="button-wrapper">
+					<button type="button" class="p-button-outlined" (click)="confirmSave()" pButton>
+						Сохранить заявку
+					</button>
+				</div>
+				<div class="button-wrapper">
+					<button type="button" class="p-button-outlined p-button-danger" (click)="confirmCancel()" pButton>
+						Отмена заявки
+					</button>
+				</div>
+			</ng-container>
 		</div>
 	</div>
 </form>

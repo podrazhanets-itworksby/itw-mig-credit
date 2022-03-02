@@ -12,9 +12,16 @@
 }
 
 .divider {
-	border-bottom: 1px solid #cacaca;
+	border-bottom: 2px solid #30404d;
 	height: 1px;
 	width: 100%;
+	margin-bottom: 10px;
+}
+
+.unit-header {
+	font-size: 20px;
+	font-weight: 600;
+	padding: 15px 0 5px 0;
 }
 
 .p-dialog .p-dialog-footer button {

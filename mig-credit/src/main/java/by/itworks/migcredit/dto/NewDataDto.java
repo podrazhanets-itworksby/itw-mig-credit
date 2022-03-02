@@ -1,6 +1,6 @@
-package by.itworks.migcredit.domain;
+package by.itworks.migcredit.dto;
 
-public class NewData {
+public class NewDataDto {
 	public String sessionId;
 	public String fieldName;
 	public String fieldValue;

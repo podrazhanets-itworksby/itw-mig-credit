@@ -43,6 +43,12 @@ export class WebsocketService {
 		return this.subject.asObservable();
 	}
 
+	public disconnect(): void {
+		if (this.stompClient !== null) {
+			this.stompClient.disconnect();
+		}
+	}
+
 	private errorCallBack(error: any): void {
 		console.log('errorCallBack -> ' + error);
 		setTimeout(() => {

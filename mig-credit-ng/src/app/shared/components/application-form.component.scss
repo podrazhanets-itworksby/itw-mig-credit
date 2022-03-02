@@ -3,27 +3,25 @@
 		border: none;
 		.fieldset-flex-container {
 			display: flex;
-			margin-top: 15px;
+
 			.field-container {
 				width: 50%;
 				margin-right: 15px;
+				position: relative;
+				justify-content: end;
 			}
+
 			.field-container:last-child {
 				margin-right: 0;
 			}
+		}
 
-			.field-container {
-				position: relative;
-				justify-content: end;
-				margin-top: 0;
+		.field-container {
+			margin-bottom: 20px;
+
+			&.with-error {
+				margin-bottom: 5px;
 			}
-		}
-		.fieldset-flex-container:first-child {
-			margin-top: 0;
-		}
-
-		.field-container:not(:first-child) {
-			margin-top: 15px;
 		}
 	}
 	.action-container {
@@ -32,23 +30,33 @@
 		position: relative;
 		justify-content: center;
 		text-align: center;
+
 		.buttons-container {
 			display: flex;
+			justify-content: center;
 			width: 70%;
+
 			.button-wrapper {
 				width: 50%;
 				margin-right: 30px;
+
 				button {
 					width: 100%;
 					height: 100%;
 					justify-content: center;
 				}
 			}
+
 			.button-wrapper:last-child {
 				margin-right: 0;
 				margin-left: 30px;
 			}
 		}
+	}
+
+	.p-error {
+		line-height: 15px;
+		height: 15px;
 	}
 }
 
@@ -56,6 +64,7 @@
 	.p-dropdown {
 		width: 100%;
 	}
+
 	.p-calendar {
 		width: 100%;
 	}

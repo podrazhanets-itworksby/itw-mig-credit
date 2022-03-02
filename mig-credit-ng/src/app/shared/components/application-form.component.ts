@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, SelectItem } from 'primeng/api';
+import { Application } from 'src/app/shared/model/application.model';
 import { ChildrenEnum } from 'src/app/shared/model/children.enum';
 import { DocTypeEnum } from 'src/app/shared/model/doc-type.enum';
 import { EducationEnum } from 'src/app/shared/model/education.enum';
-import { ExperienceEnum } from 'src/app/shared/model/Experience.enum';
+import { ExperienceEnum } from 'src/app/shared/model/experience.enum';
 import { MaritalStatusEnum } from 'src/app/shared/model/marital-status.enum';
 import { NewData } from 'src/app/shared/model/new-data.model';
 import { SexEnum } from 'src/app/shared/model/sex.enum';
@@ -17,9 +18,11 @@ import { DateUtils } from 'src/app/shared/utils/date-utils';
 	styleUrls: ['./application-form.component.scss'],
 	providers: [ConfirmationService],
 })
-export class ApplicationFormComponent implements OnInit {
+export class ApplicationFormComponent implements OnInit, OnDestroy {
 	@Input() public editMode: boolean;
 	@Input() public sessionId: string;
+
+	@Output() public saveApplicationEvent: EventEmitter<Application>;
 
 	public form: FormGroup;
 	public sex: SelectItem[];
@@ -34,6 +37,9 @@ export class ApplicationFormComponent implements OnInit {
 	public validToMinDate: Date;
 	public locale: any;
 	public datePlaceholder: string;
+	public clientAgree: boolean;
+
+	private currentApplication: Application;
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -55,12 +61,18 @@ export class ApplicationFormComponent implements OnInit {
 		this.validToMinDate = currentDate;
 		this.locale = DateUtils.getLocaleToCalendar();
 		this.datePlaceholder = 'дд.мм.гггг';
+		this.clientAgree = false;
+		this.saveApplicationEvent = new EventEmitter();
 	}
 
 	public ngOnInit(): void {
 		this.initializeValues();
 		this.initializeWs();
 		this.form = this.generatePaymentForm();
+	}
+
+	public ngOnDestroy(): void {
+		this.websocketService.disconnect();
 	}
 
 	public submit(): void {}
@@ -159,6 +171,22 @@ export class ApplicationFormComponent implements OnInit {
 		});
 	}
 
+	public confirmAgreement(): void {
+		if (this.form.invalid) {
+			this.form.markAllAsTouched();
+			Object.keys(this.form.controls).forEach((mnemo) => {
+				this.hasError(mnemo);
+			});
+			return;
+		}
+		this.clientAgree = true;
+		Object.keys(this.form.controls).forEach((mnemo) => {
+			this.form.get(mnemo)?.disable();
+		});
+
+		this.currentApplication = this.prepareApplication();
+	}
+
 	private cancel(): void {
 		Object.keys(this.form.controls).forEach((key: string) => {
 			this.form.get(key)?.setValue(null);
@@ -167,17 +195,19 @@ export class ApplicationFormComponent implements OnInit {
 			this.form.get(key)?.markAsPristine();
 			this.form.get(key)?.markAsUntouched();
 		});
+
+		this.currentApplication = new Application();
 	}
 
 	private save(): void {
-		// Отправка данных на сервер
+		this.saveApplicationEvent.emit(this.currentApplication);
 	}
 
 	private generatePaymentForm(): FormGroup {
 		const f: FormGroup = this.formBuilder.group({
 			firstname: [{ value: null, disabled: !this.editMode }, [Validators.required]],
 			lastname: [{ value: null, disabled: !this.editMode }, [Validators.required]],
-			patronymic: [{ value: null, disabled: !this.editMode }, [Validators.required]],
+			patronymic: [{ value: null, disabled: !this.editMode }],
 			sex: [{ value: null, disabled: !this.editMode }, [Validators.required]],
 			birthday: [{ value: null, disabled: !this.editMode }, [Validators.required]],
 			document: [{ value: null, disabled: !this.editMode }, [Validators.required]],
@@ -187,7 +217,7 @@ export class ApplicationFormComponent implements OnInit {
 			education: [{ value: null, disabled: !this.editMode }, [Validators.required]],
 			address: [{ value: null, disabled: !this.editMode }, [Validators.required]],
 			phone: [{ value: null, disabled: !this.editMode }, [Validators.required]],
-			phone2: [{ value: null, disabled: !this.editMode }, [Validators.required]],
+			phone2: [{ value: null, disabled: !this.editMode }],
 			maritalStatus: [{ value: null, disabled: !this.editMode }, [Validators.required]],
 			children: [{ value: null, disabled: !this.editMode }, [Validators.required]],
 			organization: [{ value: null, disabled: !this.editMode }, [Validators.required]],
@@ -282,5 +312,34 @@ export class ApplicationFormComponent implements OnInit {
 				}
 			}
 		}
+	}
+
+	private prepareApplication(): Application {
+		const birthday = this.form.get('birthday')?.value;
+		const validTo = this.form.get('validTo')?.value;
+		const averageIncome = this.form.get('averageIncome')?.value;
+
+		const application = new Application();
+		application.firstname = this.form.get('firstname')?.value;
+		application.lastname = this.form.get('lastname')?.value;
+		application.patronymic = this.form.get('patronymic')?.value;
+		application.sex = this.form.get('sex')?.value;
+		application.birthday = birthday ? new Date(birthday) : birthday;
+		application.document = this.form.get('document')?.value;
+		application.persNumber = this.form.get('persNumber')?.value;
+		application.docNumber = this.form.get('docNumber')?.value;
+		application.validTo = validTo ? new Date(validTo) : validTo;
+		application.education = this.form.get('education')?.value;
+		application.address = this.form.get('address')?.value;
+		application.phone = this.form.get('phone')?.value;
+		application.phone2 = this.form.get('phone2')?.value;
+		application.maritalStatus = this.form.get('maritalStatus')?.value;
+		application.children = this.form.get('children')?.value;
+		application.organization = this.form.get('organization')?.value;
+		application.position = this.form.get('position')?.value;
+		application.experience = this.form.get('experience')?.value;
+		application.averageIncome = isNaN(averageIncome) ? averageIncome : +averageIncome;
+
+		return application;
 	}
 }
