@@ -9,6 +9,6 @@
 		></iframe>
 	</div>
 	<div class="app-form-container">
-		<mig-application-form [editMode]="true" sessionId="1234"></mig-application-form>
+		<mig-application-form *ngIf="sessionId" [editMode]="true" [sessionId]="sessionId"></mig-application-form>
 	</div>
 </div>
