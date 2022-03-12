@@ -71,17 +71,29 @@
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('sex') }">
 				<label id="sexL" for="sex">Пол</label>
 				<p-dropdown
+					*ngIf="editMode"
 					id="sex"
 					[options]="sex"
 					formControlName="sex"
 					placeholder="Выберите пол"
 					(onChange)="sendNewData('sex')"
 				></p-dropdown>
+				<input
+					*ngIf="!editMode"
+					formControlName="sex"
+					type="text"
+					id="sex"
+					name="sex"
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('sex')"
+				/>
 				<small class="p-error" *ngIf="hasError('sex')">{{ decodeError('sex') }}</small>
 			</div>
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('birthday') }">
 				<label id="birthdayL" for="birthday">Дата рождения</label>
 				<p-calendar
+					*ngIf="editMode"
 					id="birthday"
 					[locale]="locale"
 					formControlName="birthday"
@@ -97,6 +109,17 @@
 					(onInput)="inputDate($event, 'birthday')"
 					useUtc
 				></p-calendar>
+
+				<input
+					*ngIf="!editMode"
+					formControlName="birthday"
+					type="text"
+					id="birthday"
+					name="birthday"
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('birthday')"
+				/>
 				<small class="p-error" *ngIf="hasError('birthday')">{{ decodeError('birthday') }}</small>
 			</div>
 		</div>
@@ -110,12 +133,23 @@
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('document') }">
 				<label id="documentL" for="document">Документ</label>
 				<p-dropdown
+					*ngIf="editMode"
 					id="document"
 					[options]="docType"
 					formControlName="document"
 					placeholder="Выберите тип документа"
 					(onChange)="sendNewData('document')"
 				></p-dropdown>
+				<input
+					*ngIf="!editMode"
+					formControlName="document"
+					type="text"
+					id="document"
+					name="document"
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('document')"
+				/>
 				<small class="p-error" *ngIf="hasError('document')">{{ decodeError('document') }}</small>
 			</div>
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('persNumber') }">
@@ -154,6 +188,7 @@
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('validTo') }">
 				<label id="validToL" for="validTo">Действителен до</label>
 				<p-calendar
+					*ngIf="editMode"
 					id="validTo"
 					[locale]="locale"
 					formControlName="validTo"
@@ -169,6 +204,16 @@
 					(onInput)="inputDate($event, 'validTo')"
 					useUtc
 				></p-calendar>
+				<input
+					*ngIf="!editMode"
+					formControlName="validTo"
+					type="text"
+					id="validTo"
+					name="validTo"
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('validTo')"
+				/>
 				<small class="p-error" *ngIf="hasError('validTo')">{{ decodeError('validTo') }}</small>
 			</div>
 		</div>
@@ -180,12 +225,23 @@
 		<div class="field-container" [ngClass]="{ 'with-error': hasError('education') }">
 			<label id="educationL" for="education">Образование</label>
 			<p-dropdown
+				*ngIf="editMode"
 				id="education"
 				[options]="education"
 				formControlName="education"
 				placeholder="Выберите образование"
 				(onChange)="sendNewData('education')"
 			></p-dropdown>
+			<input
+				*ngIf="!editMode"
+				formControlName="education"
+				type="text"
+				id="education"
+				name="education"
+				autocomplete="off"
+				pInputText
+				(change)="sendNewData('education')"
+			/>
 			<small class="p-error" *ngIf="hasError('education')">{{ decodeError('education') }}</small>
 		</div>
 
@@ -254,23 +310,45 @@
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('maritalStatus') }">
 				<label id="maritalStatusL" for="maritalStatus">Семейное положение</label>
 				<p-dropdown
+					*ngIf="editMode"
 					id="maritalStatus"
 					[options]="maritalStatus"
 					formControlName="maritalStatus"
 					placeholder="Выберите значение"
 					(onChange)="sendNewData('maritalStatus')"
 				></p-dropdown>
+				<input
+					*ngIf="!editMode"
+					formControlName="maritalStatus"
+					type="text"
+					id="maritalStatus"
+					name="maritalStatus"
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('maritalStatus')"
+				/>
 				<small class="p-error" *ngIf="hasError('maritalStatus')">{{ decodeError('maritalStatus') }}</small>
 			</div>
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('children') }">
 				<label id="childrenL" for="children">Иждивенцы(в том числе дети до 18-ти лет)</label>
 				<p-dropdown
+					*ngIf="editMode"
 					id="children"
 					[options]="children"
 					formControlName="children"
 					placeholder="Выберите значение"
 					(onChange)="sendNewData('children')"
 				></p-dropdown>
+				<input
+					*ngIf="!editMode"
+					formControlName="children"
+					type="text"
+					id="children"
+					name="children"
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('children')"
+				/>
 				<small class="p-error" *ngIf="hasError('children')">{{ decodeError('children') }}</small>
 			</div>
 		</div>
@@ -313,12 +391,23 @@
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('experience') }">
 				<label id="experienceL" for="experience">Время работы в данной организации</label>
 				<p-dropdown
+					*ngIf="editMode"
 					id="experience"
 					[options]="experience"
 					formControlName="experience"
 					placeholder="Выберите значение"
 					(onChange)="sendNewData('experience')"
 				></p-dropdown>
+				<input
+					*ngIf="!editMode"
+					formControlName="experience"
+					type="text"
+					id="experience"
+					name="experience"
+					autocomplete="off"
+					pInputText
+					(change)="sendNewData('experience')"
+				/>
 				<small class="p-error" *ngIf="hasError('experience')">{{ decodeError('experience') }}</small>
 			</div>
 			<div class="field-container" [ngClass]="{ 'with-error': hasError('averageIncome') }">

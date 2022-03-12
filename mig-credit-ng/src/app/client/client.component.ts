@@ -12,7 +12,7 @@ export class ClientComponent implements OnInit {
 	public videoCallEndpoint: SafeUrl;
 
 	public constructor(private sanitizer: DomSanitizer) {
-		this.videoCallEndpoint = sanitizer.bypassSecurityTrustResourceUrl(environment.videoCallEndpoint + '/operator');
+		this.videoCallEndpoint = sanitizer.bypassSecurityTrustResourceUrl(environment.videoCallEndpoint + '/client');
 	}
 
 	public ngOnInit(): void {

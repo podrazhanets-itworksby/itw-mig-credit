@@ -1,13 +1,20 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { Application } from 'src/app/shared/model/application.model';
+import { ChildrenConst } from 'src/app/shared/model/children.const';
 import { ChildrenEnum } from 'src/app/shared/model/children.enum';
+import { DocTypeConst } from 'src/app/shared/model/doc-type.const';
 import { DocTypeEnum } from 'src/app/shared/model/doc-type.enum';
+import { EducationConst } from 'src/app/shared/model/education.const';
 import { EducationEnum } from 'src/app/shared/model/education.enum';
+import { ExperienceConst } from 'src/app/shared/model/experience.const';
 import { ExperienceEnum } from 'src/app/shared/model/experience.enum';
+import { MaritalStatusConst } from 'src/app/shared/model/marital-status.const';
 import { MaritalStatusEnum } from 'src/app/shared/model/marital-status.enum';
 import { NewData } from 'src/app/shared/model/new-data.model';
+import { SexConst } from 'src/app/shared/model/sex.const';
 import { SexEnum } from 'src/app/shared/model/sex.enum';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
 import { DateUtils } from 'src/app/shared/utils/date-utils';
@@ -40,11 +47,14 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 	public clientAgree: boolean;
 
 	private currentApplication: Application;
+	private dateFields: Set<string>;
+	private dropdownFields: Set<string>;
 
 	constructor(
 		private formBuilder: FormBuilder,
 		private websocketService: WebsocketService,
-		private confirmationService: ConfirmationService
+		private confirmationService: ConfirmationService,
+		@Inject(LOCALE_ID) private datePipelocale: string
 	) {
 		this.editMode = false;
 		this.sex = [];
@@ -63,6 +73,18 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		this.datePlaceholder = 'дд.мм.гггг';
 		this.clientAgree = false;
 		this.saveApplicationEvent = new EventEmitter();
+
+		this.dateFields = new Set();
+		this.dateFields.add('birthday');
+		this.dateFields.add('validTo');
+
+		this.dropdownFields = new Set();
+		this.dropdownFields.add('sex');
+		this.dropdownFields.add('document');
+		this.dropdownFields.add('education');
+		this.dropdownFields.add('maritalStatus');
+		this.dropdownFields.add('children');
+		this.dropdownFields.add('experience');
 	}
 
 	public ngOnInit(): void {
@@ -239,79 +261,101 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 	}
 
 	private initializeValues(): void {
-		this.sex = [
-			{ value: SexEnum.FEMAIL, label: 'Женский' },
-			{ value: SexEnum.MALE, label: 'Мужской' },
-		];
+		Object.values(SexEnum).forEach((value: SexEnum) => {
+			this.sex.push({ value, label: SexConst[value] });
+		});
 
-		this.docType = [
-			{ value: DocTypeEnum.PASSPORT, label: 'Паспорт' },
-			{ value: DocTypeEnum.RESIDENT_CARD, label: 'Вид на жительство' },
-		];
+		Object.values(DocTypeEnum).forEach((value: DocTypeEnum) => {
+			this.docType.push({ value, label: DocTypeConst[value] });
+		});
 
-		this.education = [
-			{ value: EducationEnum.SECONDARY, label: 'Среднее в т.ч. Специальное' },
-			{ value: EducationEnum.INCOMPLETE_HIGHER, label: 'Неполное высшее' },
-			{ value: EducationEnum.HIGHER, label: 'Высшее (одно и более)' },
-		];
+		Object.values(EducationEnum).forEach((value: EducationEnum) => {
+			this.education.push({ value, label: EducationConst[value] });
+		});
 
-		this.maritalStatus = [
-			{ value: MaritalStatusEnum.MARRIED, label: 'Женат/замужем' },
-			{ value: MaritalStatusEnum.NOT_MARRIED, label: 'Холост/не замужем' },
-		];
+		Object.values(MaritalStatusEnum).forEach((value: MaritalStatusEnum) => {
+			this.maritalStatus.push({ value, label: MaritalStatusConst[value] });
+		});
 
-		this.children = [
-			{ value: ChildrenEnum.NO, label: 'Нет' },
-			{ value: ChildrenEnum.ONE, label: '1' },
-			{ value: ChildrenEnum.TWO, label: '2' },
-			{ value: ChildrenEnum.THREE, label: '3' },
-			{ value: ChildrenEnum.MORE_THAN_THREE, label: 'больше 3' },
-		];
+		Object.values(ChildrenEnum).forEach((value: ChildrenEnum) => {
+			this.children.push({ value, label: ChildrenConst[value] });
+		});
 
-		this.experience = [
-			{ value: ExperienceEnum.LESS_THAN_3M, label: 'меньше 3 месяцев' },
-			{ value: ExperienceEnum.FROM_3M_TO_1Y, label: 'от 3 месяцев до 1 года' },
-			{ value: ExperienceEnum.FROM_1Y_TO_3Y, label: 'от 1 года до 3 лет' },
-			{ value: ExperienceEnum.MORE_THAN_3Y, label: 'больше 3 лет' },
-		];
+		Object.values(ExperienceEnum).forEach((value: ExperienceEnum) => {
+			this.experience.push({ value, label: ExperienceConst[value] });
+		});
 	}
 
 	private onMessageReceived(data: NewData): void {
 		if (data.sessionId === this.sessionId) {
-			let value: any = data.fieldValue;
-			if ((data.fieldName === 'birthday' || data.fieldName === 'validTo') && data.fieldValue) {
-				value = new Date(data.fieldValue);
-			}
-			this.form.get(data.fieldName)?.setValue(value);
+			this.form.get(data.fieldName)?.setValue(this.getValueForClientSide(data));
 
 			var element = document.getElementById(data.fieldName);
 			var elementL = document.getElementById(data.fieldName + 'L');
+
 			if (element && elementL) {
-				var elementPosition = {
-					top: window.pageYOffset + element.getBoundingClientRect().top,
-					bottom: window.pageYOffset + element.getBoundingClientRect().bottom,
-				};
-				var labelPosition = {
-					top: window.pageYOffset + elementL.getBoundingClientRect().top,
-					bottom: window.pageYOffset + elementL.getBoundingClientRect().bottom,
-				};
-				// Получаем позиции окна
-				var windowPosition = {
-					top: window.pageYOffset,
-					bottom: window.pageYOffset + document.documentElement.clientHeight,
-				};
+				const elementPositionBottom = window.pageYOffset + element.getBoundingClientRect().bottom;
+				const labelPositionTop = window.pageYOffset + elementL.getBoundingClientRect().top;
+				const windowPositionBottom = window.pageYOffset + document.documentElement.clientHeight;
 
-				if (
-					elementPosition.bottom > windowPosition.bottom ||
-					// elementPosition.top < 0 ||
-
-					// labelPosition.bottom < windowPosition.top ||
-					labelPosition.top < 0
-				) {
+				if (elementPositionBottom > windowPositionBottom || labelPositionTop < 0) {
 					elementL.scrollIntoView();
 				}
 			}
 		}
+	}
+
+	private getValueForClientSide(data: NewData): string {
+		if (this.dateFields.has(data.fieldName) && data.fieldValue) {
+			let datePipe: DatePipe = new DatePipe(this.datePipelocale);
+			const date = datePipe.transform(new Date(data.fieldValue), 'dd.MM.yyyy');
+			const value = date === null ? data.fieldValue : date;
+			return value;
+		}
+
+		if (data.fieldName === 'sex') {
+			const value = Object.values(SexEnum).filter((value: SexEnum) => {
+				return value.toString() === data.fieldValue;
+			})[0];
+			return SexConst[value];
+		}
+
+		if (data.fieldName === 'document') {
+			const value = Object.values(DocTypeEnum).filter((value: DocTypeEnum) => {
+				return value.toString() === data.fieldValue;
+			})[0];
+			return DocTypeConst[value];
+		}
+
+		if (data.fieldName === 'education') {
+			const value = Object.values(EducationEnum).filter((value: EducationEnum) => {
+				return value.toString() === data.fieldValue;
+			})[0];
+			return EducationConst[value];
+		}
+
+		if (data.fieldName === 'maritalStatus') {
+			const value = Object.values(MaritalStatusEnum).filter((value: MaritalStatusEnum) => {
+				return value.toString() === data.fieldValue;
+			})[0];
+			return MaritalStatusConst[value];
+		}
+
+		if (data.fieldName === 'children') {
+			const value = Object.values(ChildrenEnum).filter((value: ChildrenEnum) => {
+				return value.toString() === data.fieldValue;
+			})[0];
+			return ChildrenConst[value];
+		}
+
+		if (data.fieldName === 'experience') {
+			const value = Object.values(ExperienceEnum).filter((value: ExperienceEnum) => {
+				return value.toString() === data.fieldValue;
+			})[0];
+			return ExperienceConst[value];
+		}
+
+		return data.fieldValue;
 	}
 
 	private prepareApplication(): Application {

@@ -1,12 +1,6 @@
 <div class="main-container">
 	<div>
-		<iframe
-			src="{{ videoCallEndpoint + '/client' }}"
-			title="client"
-			allow="camera; microphone"
-			height="530"
-			width="660"
-		></iframe>
+		<iframe [src]="videoCallEndpoint" title="client" allow="camera; microphone" height="530" width="660"></iframe>
 	</div>
 	<div class="app-form-container">
 		<mig-application-form *ngIf="sessionId" [sessionId]="sessionId"></mig-application-form>

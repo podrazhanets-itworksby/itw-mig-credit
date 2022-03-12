@@ -4,5 +4,5 @@ export const environment: EnvironmentModel = {
 	production: true,
 	host: '',
 	webSocketEndPoint: 'wss',
-	videoCallEndpoint: 'https://192.168.0.220:18181',
+	videoCallEndpoint: 'https://194.58.98.76:21012',
 };

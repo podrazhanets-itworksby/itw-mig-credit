@@ -29,8 +29,8 @@ public class OperatorService {
 		app.setValidTo(dto.validTo);
 		app.setEducation(dto.education);
 		app.setAddress(dto.address);
-		app.setPhone(dto.phone);
-		app.setPhone2(dto.phone2);
+		app.setPhone("+375" + dto.phone);
+		app.setPhone2(dto.phone2 != null ? "+375" + dto.phone2 : null);
 		app.setMaritalStatus(dto.maritalStatus);
 		app.setChildren(dto.children);
 		app.setOrganization(dto.organization);
