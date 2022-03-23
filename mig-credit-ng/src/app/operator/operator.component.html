@@ -1,12 +1,12 @@
 <p-toast position="bottom-center" key="responseInfo"></p-toast>
 <div class="main-container">
 	<div>
-		<iframe [src]="videoCallEndpoint" title="operator" allow="microphone" height="530" width="660"></iframe>
+		<mig-operator-video></mig-operator-video>
 	</div>
 	<div class="app-form-container">
 		<mig-application-form
 			*ngIf="sessionId"
-			[editMode]="true"
+			[editMode]="editMode"
 			[sessionId]="sessionId"
 			(saveApplicationEvent)="saveApplication($event)"
 		></mig-application-form>

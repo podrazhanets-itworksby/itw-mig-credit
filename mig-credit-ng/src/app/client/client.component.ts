@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { environment } from 'src/environments/environment';
+import { SessionService } from 'src/app/shared/services/session.service';
 
 @Component({
 	selector: 'mig-client',
@@ -9,19 +8,16 @@ import { environment } from 'src/environments/environment';
 })
 export class ClientComponent implements OnInit {
 	public sessionId: string;
-	public videoCallEndpoint: SafeUrl;
 
-	public constructor(private sanitizer: DomSanitizer) {
-		this.videoCallEndpoint = sanitizer.bypassSecurityTrustResourceUrl(environment.videoCallEndpoint + '/client');
-	}
+	public constructor(private sessionService: SessionService) {}
 
 	public ngOnInit(): void {
-		window.addEventListener('message', (event) => {
-			if (event.origin != environment.videoCallEndpoint) {
-				return;
-			}
+		this.initializeListeners();
+	}
 
-			this.sessionId = event.data;
+	private initializeListeners(): void {
+		this.sessionService.getSessionId().subscribe((value: string) => {
+			this.sessionId = value;
 		});
 	}
 }

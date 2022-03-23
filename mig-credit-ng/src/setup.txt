@@ -1,0 +1,57 @@
+Устаноска COTURN
+
+1) sudo apt-get -y update
+
+2) sudo apt-get -y install coturn
+
+3) редактируем файл /etc/default/coturn убираем комментарий перед TURNSERVER_ENABLED=1
+
+4) редактируем файл /etc/turnserver.conf 
+	listening-port=3478
+	listening-ip=<SERVER_IP>
+	user=<USER_NAME>:<PASSWORD> (логин и пароль Для TURN сервера)
+	cli-port=5766
+
+5) редактируем файл /etc/services Добавляем в конец файла
+	stun-turn       3478/tcp                        # Coturn
+	stun-turn       3478/udp                        # Coturn
+	stun-turn-tls   5349/tcp                        # Coturn
+	stun-turn-tls   5349/udp                        # Coturn
+	turnserver-cli  5766/tcp                        # Coturn
+
+6) sudo service coturn restart
+
+7) Возможно понадобится открыть порты 
+	80 : TCP
+	443 : TCP
+	3478 : UDP
+	
+Проверить доступность STUN/TURN сервера можно на сайте https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
+	STUN or TURN URI: turn:<SERVER_IP>:3478 или stun:<SERVER_IP>:3478
+	TURN username: <USER_NAME>
+	TURN password: <PASSWORD>
+Берем данные указанные на 4 шаге
+
+8) обновить свойства файла environment.prod.ts
+	coturnUrl: <SERVER_IP>,
+	coturnUsername: <USER_NAME>,
+	coturnPassword: <PASSWORD>,
+Подставляем данные указанные на 4 шаге
+
+
+Запуск docker'а
+	docker run -p 4443:4443 --rm \
+		-e OPENVIDU_SECRET=<SECRET> \
+		-e DOMAIN_OR_PUBLIC_IP=<OPENVIDU_SERVER_IP> \
+		-e OPENVIDU_RECORDING=true \
+		-e OPENVIDU_RECORDING_PATH=/PATH/TO/VIDEO/FILES \
+		-e OPENVIDU_RECORDING_AUTOSTOP_TIMEOUT=3600 \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v /PATH/TO/VIDEO/FILES:/PATH/TO/VIDEO/FILES \
+	openvidu/openvidu-server-kms:2.20.0 
+	
+<SECRET> указанный при запуске доккера должен совпадать с <SECRET> указанным в переменной среды OPEN_VIDU_SECRET
+<OPENVIDU_SERVER_IP> указанный при запуске доккера должен совподать с IP который указан в переменной среды OPEN_VIDU_URL. Пример: OPEN_VIDU_URL=https://89.108.83.64:4443/ OPENVIDU_SERVER_IP=89.108.83.64
+
+Пример Linux
+docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET -e DOMAIN_OR_PUBLIC_IP=194.58.98.76 -e OPENVIDU_RECORDING=true -e OPENVIDU_RECORDING_PATH=/opt/video-link-records -e OPENVIDU_RECORDING_AUTOSTOP_TIMEOUT=3600 -v /var/run/docker.sock:/var/run/docker.sock -v /opt/video-link-records:/opt/video-link-records openvidu/openvidu-server-kms:latest

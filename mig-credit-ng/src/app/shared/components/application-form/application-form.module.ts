@@ -6,7 +6,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { ApplicationFormComponent } from 'src/app/shared/components/application-form.component';
+import { ApplicationFormComponent } from 'src/app/shared/components/application-form/application-form.component';
 import { UseUtcModule } from 'src/app/shared/directives/use-utc/use-utc.module';
 
 @NgModule({

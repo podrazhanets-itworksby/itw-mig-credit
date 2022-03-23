@@ -1,0 +1,30 @@
+<ng-container *ngIf="!session && !gettingFreeSession && !sessionFound">
+	<button type="button" (click)="getFreeSession()">Join To The Session</button>
+</ng-container>
+
+<ng-container *ngIf="gettingFreeSession">
+	<span>Waiting Free Operator</span>
+	<button type="button" (click)="endWaiting()">End Waiting</button>
+</ng-container>
+
+<ng-container *ngIf="sessionFound">
+	<span>Free operator has been found</span>
+	<button type="button" (click)="getDataToJoinTheSession()">Start session</button>
+</ng-container>
+
+<ng-container *ngIf="session">
+	<input
+		class="btn btn-large btn-danger"
+		type="button"
+		id="buttonLeaveSession"
+		(click)="leaveSession()"
+		value="Leave session"
+	/>
+	<div *ngIf="mainStreamManager">
+		<mig-video [streamManager]="mainStreamManager"></mig-video>
+	</div>
+	<ng-container *ngIf="subscriber">
+		<mig-video [streamManager]="subscriber" [hidden]="true"></mig-video>
+	</ng-container>
+</ng-container>
+<audio id="notif" #notification src="assets/notification.mp3"></audio>

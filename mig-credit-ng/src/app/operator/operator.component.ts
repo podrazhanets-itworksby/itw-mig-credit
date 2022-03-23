@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MessageService } from 'primeng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Application } from 'src/app/shared/model/application.model';
 import { OperatorService } from 'src/app/shared/services/operator.service';
-import { environment } from 'src/environments/environment';
+import { SessionService } from 'src/app/shared/services/session.service';
 
 @Component({
 	selector: 'mig-operator',
@@ -15,28 +14,21 @@ import { environment } from 'src/environments/environment';
 })
 export class OperatorComponent implements OnInit, OnDestroy {
 	public sessionId: string;
-	public videoCallEndpoint: SafeUrl;
+	public editMode: boolean;
 
 	private readonly destroy$: Subject<void>;
 
 	constructor(
 		private operatorService: OperatorService,
 		private messageService: MessageService,
-		private sanitizer: DomSanitizer
+		private sessionService: SessionService
 	) {
 		this.destroy$ = new Subject<void>();
-		this.videoCallEndpoint = sanitizer.bypassSecurityTrustResourceUrl(environment.videoCallEndpoint + '/operator');
-		console.log(this.videoCallEndpoint);
+		this.editMode = true;
 	}
 
 	public ngOnInit(): void {
-		window.addEventListener('message', (event) => {
-			if (event.origin != environment.videoCallEndpoint) {
-				return;
-			}
-
-			this.sessionId = event.data;
-		});
+		this.initializeListeners();
 	}
 
 	public ngOnDestroy(): void {
@@ -49,6 +41,13 @@ export class OperatorComponent implements OnInit, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe(() => {
 				this.messageService.add({ key: 'responseInfo', severity: 'success', detail: 'Saved' });
+				this.editMode = false;
 			});
+	}
+
+	private initializeListeners(): void {
+		this.sessionService.getSessionId().subscribe((value: string) => {
+			this.sessionId = value;
+		});
 	}
 }
