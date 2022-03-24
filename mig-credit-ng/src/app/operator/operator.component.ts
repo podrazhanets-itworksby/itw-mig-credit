@@ -14,7 +14,7 @@ import { SessionService } from 'src/app/shared/services/session.service';
 })
 export class OperatorComponent implements OnInit, OnDestroy {
 	public sessionId: string;
-	public editMode: boolean;
+	public actionButton: boolean;
 
 	private readonly destroy$: Subject<void>;
 
@@ -24,7 +24,7 @@ export class OperatorComponent implements OnInit, OnDestroy {
 		private sessionService: SessionService
 	) {
 		this.destroy$ = new Subject<void>();
-		this.editMode = true;
+		this.actionButton = true;
 	}
 
 	public ngOnInit(): void {
@@ -41,7 +41,7 @@ export class OperatorComponent implements OnInit, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe(() => {
 				this.messageService.add({ key: 'responseInfo', severity: 'success', detail: 'Saved' });
-				this.editMode = false;
+				this.actionButton = false;
 			});
 	}
 

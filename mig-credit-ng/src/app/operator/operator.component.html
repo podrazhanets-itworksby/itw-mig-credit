@@ -6,7 +6,8 @@
 	<div class="app-form-container">
 		<mig-application-form
 			*ngIf="sessionId"
-			[editMode]="editMode"
+			[editMode]="true"
+			[actionButton]="actionButton"
 			[sessionId]="sessionId"
 			(saveApplicationEvent)="saveApplication($event)"
 		></mig-application-form>

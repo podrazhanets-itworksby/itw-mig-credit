@@ -28,6 +28,7 @@ import { DateUtils } from 'src/app/shared/utils/date-utils';
 export class ApplicationFormComponent implements OnInit, OnDestroy {
 	@Input() public editMode: boolean;
 	@Input() public sessionId: string;
+	@Input() public actionButton: boolean;
 
 	@Output() public saveApplicationEvent: EventEmitter<Application>;
 
@@ -72,6 +73,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		this.locale = DateUtils.getLocaleToCalendar();
 		this.datePlaceholder = 'дд.мм.гггг';
 		this.clientAgree = false;
+		this.actionButton = false;
 		this.saveApplicationEvent = new EventEmitter();
 
 		this.dateFields = new Set();

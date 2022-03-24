@@ -8,7 +8,6 @@ export const environment: EnvironmentModel = {
 	production: false,
 	host: 'http://localhost:9229',
 	webSocketEndPoint: 'http://localhost:9229/wss',
-	// videoCallEndpoint: 'http://localhost:58468',
 	coturnUrl: '',
 	coturnUsername: '',
 	coturnPassword: '',
