@@ -1,19 +1,34 @@
 <ng-container *ngIf="!session">
-	<button type="button" (click)="createSession()">Create Session</button>
+	<div class="button-wrapper">
+		<button type="button" (click)="createSession()">Create Session</button>
+	</div>
 </ng-container>
 
 <ng-container *ngIf="session">
-	<input
-		class="btn btn-large btn-danger"
-		type="button"
-		id="buttonLeaveSession"
-		(click)="leaveSession()"
-		value="Leave session"
-	/>
-	<div *ngIf="subscriber">
-		<mig-video [streamManager]="subscriber"></mig-video>
+	<div class="button-wrapper">
+		<button type="button" id="buttonLeaveSession" (click)="leaveSession()">Leave session</button>
+
+		<button *ngIf="showTakePictureBtn" type="button" id="buttonTakePicture" (click)="takePicture()">
+			Take a picture
+		</button>
+
+		<button *ngIf="showRemovePictureBtn" type="button" id="buttonRemovePicture" (click)="savePicture()">
+			Save picture
+		</button>
+
+		<button *ngIf="showRemovePictureBtn" type="button" id="buttonRemovePicture" (click)="removePicture()">
+			Remove picture
+		</button>
+	</div>
+
+	<img id="picture" style="width: 100%" />
+
+	<div *ngIf="subscriber" id="clientVideoDiv" style="direction: ltr">
+		<mig-video #clientVideo [streamManager]="subscriber" [height]="videoHeight" [width]="videoWidth"></mig-video>
 	</div>
 	<ng-container *ngIf="mainStreamManager">
 		<mig-video [streamManager]="mainStreamManager" [hidden]="true"></mig-video>
 	</ng-container>
+
+	<canvas id="canvas" [hidden]="true"> </canvas>
 </ng-container>

@@ -12,7 +12,7 @@
             </column>
 
             <column name="session_id" type="UUID" remarks="Идентификатор сессии">
-                <constraints primaryKey="true" primaryKeyName="pk_company"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="firstname" type="VARCHAR(30)" remarks="Имя клиента">

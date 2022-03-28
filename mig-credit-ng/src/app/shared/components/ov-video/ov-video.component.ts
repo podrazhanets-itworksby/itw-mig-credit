@@ -8,11 +8,15 @@ import { StreamManager } from 'openvidu-browser';
 export class OpenViduVideoComponent implements AfterViewInit {
 	@ViewChild('videoElement') public elementRef: ElementRef;
 	@Input() public hidden: boolean;
+	@Input() public width: number;
+	@Input() public height: number;
 
 	private _streamManager: StreamManager;
 
 	public constructor() {
 		this.hidden = false;
+		this.width = 1280;
+		this.height = 720;
 	}
 
 	public ngAfterViewInit(): void {
@@ -25,5 +29,13 @@ export class OpenViduVideoComponent implements AfterViewInit {
 		if (!!this.elementRef) {
 			this._streamManager.addVideoElement(this.elementRef.nativeElement);
 		}
+	}
+
+	public getVideoElement(): any {
+		return this.elementRef.nativeElement;
+	}
+
+	public getWidth(): string {
+		return this.elementRef.nativeElement.clientWidth;
 	}
 }

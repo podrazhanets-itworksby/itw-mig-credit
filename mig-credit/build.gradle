@@ -32,6 +32,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test:5.5.1'
     // https://mvnrepository.com/artifact/io.openvidu/openvidu-java-client
     implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.20.0'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 }
 
 jar {

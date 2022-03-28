@@ -169,7 +169,7 @@ export class ClientVideoComponent implements OnInit, OnDestroy {
 					videoSource: undefined, // Источник видео. undefined - web камера по умолчанию
 					publishAudio: true, // Начать сразу с включенным звуком
 					publishVideo: true, // Начать сразу с включенным видео
-					resolution: '1280x720', // разрешение видео
+					resolution: '1920x1080', // разрешение видео
 					frameRate: 24, // частота кадров
 					insertMode: 'APPEND', // способ вставки видео в элемент
 					mirror: false, // Зеркальное отражение или нет

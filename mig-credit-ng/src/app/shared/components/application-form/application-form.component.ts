@@ -31,6 +31,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 	@Input() public actionButton: boolean;
 
 	@Output() public saveApplicationEvent: EventEmitter<Application>;
+	@Output() public cancelApplicationEvent: EventEmitter<void>;
 
 	public form: FormGroup;
 	public sex: SelectItem[];
@@ -75,6 +76,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		this.clientAgree = false;
 		this.actionButton = false;
 		this.saveApplicationEvent = new EventEmitter();
+		this.cancelApplicationEvent = new EventEmitter();
 
 		this.dateFields = new Set();
 		this.dateFields.add('birthday');
@@ -212,15 +214,15 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 	}
 
 	private cancel(): void {
+		this.form.reset();
 		Object.keys(this.form.controls).forEach((key: string) => {
-			this.form.get(key)?.setValue(null);
 			this.sendNewData(key);
-
-			this.form.get(key)?.markAsPristine();
-			this.form.get(key)?.markAsUntouched();
+			this.form.get(key)?.enable();
 		});
 
 		this.currentApplication = new Application();
+		this.clientAgree = false;
+		this.cancelApplicationEvent.emit();
 	}
 
 	private save(): void {

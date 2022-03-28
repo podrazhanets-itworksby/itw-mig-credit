@@ -1,15 +1,18 @@
 <p-toast position="bottom-center" key="responseInfo"></p-toast>
-<div class="main-container">
-	<div>
-		<mig-operator-video></mig-operator-video>
-	</div>
-	<div class="app-form-container">
-		<mig-application-form
-			*ngIf="sessionId"
-			[editMode]="true"
-			[actionButton]="actionButton"
-			[sessionId]="sessionId"
-			(saveApplicationEvent)="saveApplication($event)"
-		></mig-application-form>
+<div class="wrapper">
+	<div class="main-container">
+		<div class="app-video-container">
+			<mig-operator-video></mig-operator-video>
+		</div>
+		<div class="app-form-container">
+			<mig-application-form
+				*ngIf="sessionId"
+				[editMode]="true"
+				[actionButton]="actionButton"
+				[sessionId]="sessionId"
+				(saveApplicationEvent)="saveApplication($event)"
+				(cancelApplicationEvent)="actionButton = true"
+			></mig-application-form>
+		</div>
 	</div>
 </div>
