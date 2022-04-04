@@ -4,7 +4,7 @@ export const environment: EnvironmentModel = {
 	production: true,
 	host: '',
 	webSocketEndPoint: 'wss',
-	coturnUrl: '185.65.137.54',
+	coturnUrl: 'migcredit.by',
 	coturnUsername: 'migcredit',
 	coturnPassword: '1m1t4teR',
 };
