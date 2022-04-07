@@ -5,6 +5,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { ApplicationFormComponent } from 'src/app/shared/components/application-form/application-form.component';
 import { UseUtcModule } from 'src/app/shared/directives/use-utc/use-utc.module';
@@ -21,6 +22,7 @@ import { UseUtcModule } from 'src/app/shared/directives/use-utc/use-utc.module';
 		CalendarModule,
 		NgxMaskModule,
 		ConfirmDialogModule,
+		CheckboxModule,
 	],
 	exports: [ApplicationFormComponent],
 })

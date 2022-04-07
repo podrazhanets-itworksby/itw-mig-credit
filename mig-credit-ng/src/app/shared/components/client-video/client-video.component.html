@@ -25,6 +25,7 @@
 	</div>
 	<ng-container *ngIf="subscriber">
 		<mig-video [streamManager]="subscriber" [hidden]="true"></mig-video>
+		<div>ВНИМАНИЕ! Ведется непрерывная аудио и видео запись!</div>
 	</ng-container>
 </ng-container>
 <audio id="notif" #notification src="assets/notification.mp3"></audio>

@@ -2,45 +2,84 @@ import { Injectable } from '@angular/core';
 import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
 import { Observable, Subject } from 'rxjs';
 import * as SockJS from 'sockjs-client';
+import { ConfirmationRequest } from 'src/app/shared/model/confirmation-request.model';
+import { ConfirmationResponse } from 'src/app/shared/model/confirmation-response.model';
 import { NewData } from 'src/app/shared/model/new-data.model';
+import { SessionId } from 'src/app/shared/model/session-id.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
 	private webSocketEndPoint: string;
-	private topic: string;
 	private stompClient: CompatClient;
-	private subject: Subject<NewData>;
+	private newDataSubject: Subject<NewData>;
+	private confirmationRequestSubject: Subject<ConfirmationRequest>;
+	private confirmationResponseSubject: Subject<ConfirmationResponse>;
 
 	public constructor() {
 		this.webSocketEndPoint = environment.webSocketEndPoint;
-		this.topic = '/topic/output/';
-		this.subject = new Subject();
+		this.newDataSubject = new Subject();
+		this.confirmationRequestSubject = new Subject();
+		this.confirmationResponseSubject = new Subject();
 	}
 
 	public connect(): void {
 		let ws = new SockJS(this.webSocketEndPoint);
 		this.stompClient = Stomp.over(ws);
-		this.stompClient.connect({}, () => {}, this.errorCallBack);
 	}
 
 	public sendNewData(data: NewData): void {
 		this.stompClient.send('/app/new-data', {}, JSON.stringify(data));
 	}
 
-	public connectAndSubscribe(sessionId: string): Observable<NewData> {
-		let ws = new SockJS(this.webSocketEndPoint);
-		this.stompClient = Stomp.over(ws);
+	public sendConfirmationRequest(data: SessionId): void {
+		this.stompClient.send('/app/confirmation-request', {}, JSON.stringify(data));
+	}
+
+	public sendConfirmationResponse(data: ConfirmationResponse): void {
+		this.stompClient.send('/app/confirmation-response', {}, JSON.stringify(data));
+	}
+
+	public connectOperator(sessionId: string): void {
+		this.connect();
 		this.stompClient.connect(
 			{},
 			() => {
-				this.stompClient.subscribe(this.topic + sessionId, (sdkEvent) => {
-					this.onMessageReceived(sdkEvent);
+				this.stompClient.subscribe('/confirmation-response/output/' + sessionId, (message) => {
+					this.confirmationResponseSubject.next(new ConfirmationResponse(JSON.parse(message.body)));
 				});
 			},
 			this.errorCallBack
 		);
-		return this.subject.asObservable();
+	}
+
+	public connectClient(sessionId: string): void {
+		this.connect();
+		this.stompClient.connect(
+			{},
+			() => {
+				this.stompClient.subscribe('/new-data/output/' + sessionId, (message) => {
+					this.newDataSubject.next(new NewData(JSON.parse(message.body)));
+				});
+
+				this.stompClient.subscribe('/confirmation-request/output/' + sessionId, (message) => {
+					this.confirmationRequestSubject.next(new ConfirmationRequest(JSON.parse(message.body)));
+				});
+			},
+			this.errorCallBack
+		);
+	}
+
+	public subscribeToNewData(): Observable<NewData> {
+		return this.newDataSubject.asObservable();
+	}
+
+	public subscribeToConfirmationRequest(): Observable<ConfirmationRequest> {
+		return this.confirmationRequestSubject.asObservable();
+	}
+
+	public subscribeToConfirmationResponse(): Observable<ConfirmationResponse> {
+		return this.confirmationResponseSubject.asObservable();
 	}
 
 	public disconnect(): void {
@@ -54,9 +93,5 @@ export class WebsocketService {
 		setTimeout(() => {
 			this.connect();
 		}, 5000);
-	}
-
-	private onMessageReceived(message: IMessage): void {
-		this.subject.next(new NewData(JSON.parse(message.body)));
 	}
 }

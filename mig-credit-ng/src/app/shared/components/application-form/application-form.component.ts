@@ -5,6 +5,8 @@ import { ConfirmationService, SelectItem } from 'primeng/api';
 import { Application } from 'src/app/shared/model/application.model';
 import { ChildrenConst } from 'src/app/shared/model/children.const';
 import { ChildrenEnum } from 'src/app/shared/model/children.enum';
+import { ConfirmationRequest } from 'src/app/shared/model/confirmation-request.model';
+import { ConfirmationResponse } from 'src/app/shared/model/confirmation-response.model';
 import { DocTypeConst } from 'src/app/shared/model/doc-type.const';
 import { DocTypeEnum } from 'src/app/shared/model/doc-type.enum';
 import { EducationConst } from 'src/app/shared/model/education.const';
@@ -14,6 +16,7 @@ import { ExperienceEnum } from 'src/app/shared/model/experience.enum';
 import { MaritalStatusConst } from 'src/app/shared/model/marital-status.const';
 import { MaritalStatusEnum } from 'src/app/shared/model/marital-status.enum';
 import { NewData } from 'src/app/shared/model/new-data.model';
+import { SessionId } from 'src/app/shared/model/session-id.model';
 import { SexConst } from 'src/app/shared/model/sex.const';
 import { SexEnum } from 'src/app/shared/model/sex.enum';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
@@ -47,6 +50,9 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 	public locale: any;
 	public datePlaceholder: string;
 	public clientAgree: boolean;
+	public confirmationRequestText: string;
+	public confirmationRequestValue: boolean;
+	public confirmationFieldDisabled: boolean;
 
 	private currentApplication: Application;
 	private dateFields: Set<string>;
@@ -197,7 +203,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	public confirmAgreement(): void {
+	public sendConfirmationRequest(): void {
 		if (this.form.invalid) {
 			this.form.markAllAsTouched();
 			Object.keys(this.form.controls).forEach((mnemo) => {
@@ -205,12 +211,26 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 			});
 			return;
 		}
-		this.clientAgree = true;
+
+		const sessionId = new SessionId();
+		sessionId.id = this.sessionId;
+
+		this.websocketService.sendConfirmationRequest(sessionId);
 		Object.keys(this.form.controls).forEach((mnemo) => {
 			this.form.get(mnemo)?.disable();
 		});
 
 		this.currentApplication = this.prepareApplication();
+	}
+
+	public changeConfirmationState($event: any): void {
+		if ($event.checked) {
+			this.confirmationFieldDisabled = $event.checked;
+			const response = new ConfirmationResponse();
+			response.sessionId = this.sessionId;
+			response.isConfirmed = $event.checked;
+			this.websocketService.sendConfirmationResponse(response);
+		}
 	}
 
 	private cancel(): void {
@@ -256,10 +276,20 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 
 	private initializeWs(): void {
 		if (this.editMode) {
-			this.websocketService.connect();
+			this.websocketService.connectOperator(this.sessionId);
+
+			this.websocketService.subscribeToConfirmationResponse().subscribe((data: ConfirmationResponse) => {
+				this.clientAgree = data.isConfirmed;
+			});
 		} else {
-			this.websocketService.connectAndSubscribe(this.sessionId).subscribe((data: NewData) => {
-				this.onMessageReceived(data);
+			this.websocketService.connectClient(this.sessionId);
+
+			this.websocketService.subscribeToNewData().subscribe((data: NewData) => {
+				this.onNewDataReceived(data);
+			});
+
+			this.websocketService.subscribeToConfirmationRequest().subscribe((request: ConfirmationRequest) => {
+				this.onConfirmationRequestReceived(request.text);
 			});
 		}
 	}
@@ -290,7 +320,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	private onMessageReceived(data: NewData): void {
+	private onNewDataReceived(data: NewData): void {
 		if (data.sessionId === this.sessionId) {
 			this.form.get(data.fieldName)?.setValue(this.getValueForClientSide(data));
 
@@ -389,5 +419,11 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		application.averageIncome = isNaN(averageIncome) ? averageIncome : +averageIncome;
 
 		return application;
+	}
+
+	private onConfirmationRequestReceived(data: string): void {
+		this.confirmationRequestText = data;
+		this.confirmationRequestValue = false;
+		this.confirmationFieldDisabled = false;
 	}
 }

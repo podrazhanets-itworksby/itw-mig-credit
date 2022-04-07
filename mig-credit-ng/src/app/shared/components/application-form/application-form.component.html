@@ -428,27 +428,37 @@
 			</div>
 		</div>
 	</fieldset>
-	<div *ngIf="editMode && actionButton" class="action-container">
-		<div class="buttons-container">
-			<ng-container *ngIf="!clientAgree">
-				<div class="button-wrapper">
-					<button type="button" class="p-button-outlined" (click)="confirmAgreement()" pButton>
-						Клиент подтвердил валидность введенных вами данных
-					</button>
-				</div>
-			</ng-container>
-			<ng-container *ngIf="clientAgree">
-				<div class="button-wrapper">
-					<button type="button" class="p-button-outlined" (click)="confirmSave()" pButton>
-						Сохранить заявку
-					</button>
-				</div>
-				<div class="button-wrapper">
-					<button type="button" class="p-button-outlined p-button-danger" (click)="confirmCancel()" pButton>
-						Отмена заявки
-					</button>
-				</div>
-			</ng-container>
-		</div>
-	</div>
 </form>
+<div *ngIf="confirmationRequestText" class="confirmation">
+	<p-checkbox
+		[(ngModel)]="confirmationRequestValue"
+		[binary]="true"
+		inputId="confirmation"
+		[disabled]="confirmationFieldDisabled"
+		(onChange)="changeConfirmationState($event)"
+	></p-checkbox>
+	<label for="confirmation">{{ confirmationRequestText }}</label>
+</div>
+<div *ngIf="editMode && actionButton" class="action-container">
+	<div class="buttons-container">
+		<ng-container *ngIf="!clientAgree">
+			<div class="button-wrapper">
+				<button type="button" class="p-button-outlined" (click)="sendConfirmationRequest()" pButton>
+					Завершить ввод данных
+				</button>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="clientAgree">
+			<div class="button-wrapper">
+				<button type="button" class="p-button-outlined" (click)="confirmSave()" pButton>
+					Отправить на анализ
+				</button>
+			</div>
+			<div class="button-wrapper">
+				<button type="button" class="p-button-outlined p-button-danger" (click)="confirmCancel()" pButton>
+					Отмена заявки
+				</button>
+			</div>
+		</ng-container>
+	</div>
+</div>
