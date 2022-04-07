@@ -54,4 +54,4 @@
 <OPENVIDU_SERVER_IP> указанный при запуске доккера должен совподать с IP который указан в переменной среды OPEN_VIDU_URL. Пример: OPEN_VIDU_URL=https://89.108.83.64:4443/ OPENVIDU_SERVER_IP=89.108.83.64
 
 Пример Linux
-docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET -e DOMAIN_OR_PUBLIC_IP=194.58.98.76 -e OPENVIDU_RECORDING=true -e OPENVIDU_RECORDING_PATH=/opt/video-link-records -e OPENVIDU_RECORDING_AUTOSTOP_TIMEOUT=3600 -v /var/run/docker.sock:/var/run/docker.sock -v /opt/video-link-records:/opt/video-link-records openvidu/openvidu-server-kms:latest
+docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET -e DOMAIN_OR_PUBLIC_IP=185.65.137.54 -e OPENVIDU_RECORDING=true -e OPENVIDU_RECORDING_PATH=/opt/video-link-records -e OPENVIDU_RECORDING_AUTOSTOP_TIMEOUT=3600 -v /var/run/docker.sock:/var/run/docker.sock -v /opt/video-link-records:/opt/video-link-records openvidu/openvidu-server-kms:latest

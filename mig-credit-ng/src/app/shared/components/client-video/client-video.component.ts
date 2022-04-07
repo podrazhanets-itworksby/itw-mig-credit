@@ -128,21 +128,21 @@ export class ClientVideoComponent implements OnInit, OnDestroy {
 	 */
 	private initClient(data: SessionData): void {
 		this.OV = new OpenVidu();
-		if (environment.production) {
-			this.OV.setAdvancedConfiguration({
-				iceServers: [
-					{ urls: `stun:${environment.coturnUrl}:3478` },
-					{
-						urls: [
-							`turn:${environment.coturnUrl}:3478`,
-							`turn:${environment.coturnUrl}:3478?transport=tcp`,
-						],
-						username: environment.coturnUsername,
-						credential: environment.coturnPassword,
-					},
-				],
-			});
-		}
+		// if (environment.production) {
+		// 	this.OV.setAdvancedConfiguration({
+		// 		iceServers: [
+		// 			{ urls: `stun:${environment.coturnUrl}:3478` },
+		// 			{
+		// 				urls: [
+		// 					`turn:${environment.coturnUrl}:3478`,
+		// 					`turn:${environment.coturnUrl}:3478?transport=tcp`,
+		// 				],
+		// 				username: environment.coturnUsername,
+		// 				credential: environment.coturnPassword,
+		// 			},
+		// 		],
+		// 	});
+		// }
 		this.session = this.OV.initSession();
 
 		this.session.on('streamCreated', (event: StreamEvent) => {

@@ -21,13 +21,11 @@ public class SessionService {
 	private final SessionUtils sessionUtils;
 	private final SseUtils sseUtils;
 	private final by.itworks.migcredit.service.VideoRecorderService videoRecorderService;
-
-	private OpenVidu openVidu;
 	@Value("${open.vidu.secret}")
 	String secret;
-
 	@Value("${open.vidu.url}")
 	String openViduUrl;
+	private OpenVidu openVidu;
 
 	@PostConstruct
 	public void init() {
@@ -49,7 +47,7 @@ public class SessionService {
 			SessionProperties sessionProperties = new SessionProperties.Builder()
 					.recordingMode(RecordingMode.MANUAL)
 					.forcedVideoCodec(VideoCodec.VP8)
-					.defaultRecordingProperties(videoRecorderService.getRecorderProperty(sessionId))
+//					.defaultRecordingProperties(videoRecorderService.getRecorderProperty(sessionId))
 					.build();
 			Session session = this.openVidu.createSession(sessionProperties);
 			String token = session.createConnection(connectionProperties).getToken();

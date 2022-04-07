@@ -16,13 +16,11 @@ import java.util.UUID;
 public class VideoRecorderService {
 
 	private final SessionUtils sessionUtils;
-
-	private OpenVidu openVidu;
 	@Value("${open.vidu.secret}")
 	String secret;
-
 	@Value("${open.vidu.url}")
 	String openViduUrl;
+	private OpenVidu openVidu;
 
 	@PostConstruct
 	public void init() {
@@ -62,7 +60,6 @@ public class VideoRecorderService {
 				.outputMode(Recording.OutputMode.COMPOSED)
 				.recordingLayout(RecordingLayout.BEST_FIT)
 				.resolution("1280x720")
-				.frameRate(24)
 				.hasAudio(true)
 				.hasVideo(true)
 				.build();
