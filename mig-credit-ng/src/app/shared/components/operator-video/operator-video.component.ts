@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnDestroy, Output, ViewChild } from '@angular/core';
 import { OpenVidu, Publisher, Session, Stream, StreamEvent, StreamManager } from 'openvidu-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -6,7 +6,6 @@ import { OpenViduVideoComponent } from 'src/app/shared/components/ov-video/ov-vi
 import { SessionData } from 'src/app/shared/model/session-data.model';
 import { FileService } from 'src/app/shared/services/file.service';
 import { SessionService } from 'src/app/shared/services/session.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
 	selector: 'mig-operator-video',
@@ -178,6 +177,7 @@ export class OperatorVideoComponent implements OnDestroy {
 					videoSource: false, // Источник видео. false - без видео
 					publishAudio: true, // Начать сразу с включенным звуком
 					publishVideo: false, // Начать сразу с включенным видео
+					mirror: true,
 				});
 				this.session.publish(publisher);
 				this.mainStreamManager = publisher;

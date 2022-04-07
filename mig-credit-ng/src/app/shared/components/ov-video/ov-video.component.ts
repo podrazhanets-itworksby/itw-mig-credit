@@ -4,12 +4,14 @@ import { StreamManager } from 'openvidu-browser';
 @Component({
 	selector: 'mig-video',
 	templateUrl: './ov-video.component.html',
+	styleUrls: ['./ov-video.component.scss'],
 })
 export class OpenViduVideoComponent implements AfterViewInit {
 	@ViewChild('videoElement') public elementRef: ElementRef;
 	@Input() public hidden: boolean;
 	@Input() public width: number;
 	@Input() public height: number;
+	@Input() public mirror: boolean;
 
 	private _streamManager: StreamManager;
 
@@ -17,6 +19,7 @@ export class OpenViduVideoComponent implements AfterViewInit {
 		this.hidden = false;
 		this.width = 1280;
 		this.height = 720;
+		this.mirror = false;
 	}
 
 	public ngAfterViewInit(): void {

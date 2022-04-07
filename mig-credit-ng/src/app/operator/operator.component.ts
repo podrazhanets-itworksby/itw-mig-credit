@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { OperatorVideoComponent } from 'src/app/shared/components/operator-video/operator-video.component';
 import { Application } from 'src/app/shared/model/application.model';
 import { OperatorService } from 'src/app/shared/services/operator.service';
 import { SessionService } from 'src/app/shared/services/session.service';
@@ -42,6 +43,7 @@ export class OperatorComponent implements OnInit, OnDestroy {
 			.subscribe(() => {
 				this.messageService.add({ key: 'responseInfo', severity: 'success', detail: 'Saved' });
 				this.actionButton = false;
+				this.sessionService.disconnectClientFromSession(this.sessionId).subscribe(() => {});
 			});
 	}
 

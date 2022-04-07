@@ -24,7 +24,13 @@
 	<img id="picture" style="width: 100%" />
 
 	<div *ngIf="subscriber" id="clientVideoDiv" style="direction: ltr">
-		<mig-video #clientVideo [streamManager]="subscriber" [height]="videoHeight" [width]="videoWidth"></mig-video>
+		<mig-video
+			#clientVideo
+			[streamManager]="subscriber"
+			[height]="videoHeight"
+			[width]="videoWidth"
+			[mirror]="true"
+		></mig-video>
 	</div>
 	<ng-container *ngIf="mainStreamManager">
 		<mig-video [streamManager]="mainStreamManager" [hidden]="true"></mig-video>

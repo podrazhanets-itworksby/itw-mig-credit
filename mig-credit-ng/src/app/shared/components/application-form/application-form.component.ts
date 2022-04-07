@@ -195,7 +195,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		}
 		this.confirmationService.confirm({
 			key: 'save',
-			message: 'Вы уверены, что хотите сохранить заявку?',
+			message: 'Вы уверены, что хотите отправить заявку на анализ?',
 			accept: () => {
 				this.save();
 			},
