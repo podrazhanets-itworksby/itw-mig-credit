@@ -1,8 +1,18 @@
 <div class="main-container">
-	<div>
-		<mig-client-video></mig-client-video>
-	</div>
-	<div class="app-form-container">
-		<mig-application-form *ngIf="sessionId" [sessionId]="sessionId"></mig-application-form>
-	</div>
+	<ng-container *ngIf="!showNotification">
+		<div>
+			<mig-client-video></mig-client-video>
+		</div>
+		<div class="app-form-container">
+			<mig-application-form *ngIf="sessionId" [sessionId]="sessionId"></mig-application-form>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="showNotification">
+		<div class="client-notification-wrapper">
+			<mig-client-notification
+				[data]="clientNotificationData"
+				(read)="clientReadNotification()"
+			></mig-client-notification>
+		</div>
+	</ng-container>
 </div>

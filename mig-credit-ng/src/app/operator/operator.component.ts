@@ -6,6 +6,7 @@ import { OperatorVideoComponent } from 'src/app/shared/components/operator-video
 import { Application } from 'src/app/shared/model/application.model';
 import { OperatorService } from 'src/app/shared/services/operator.service';
 import { SessionService } from 'src/app/shared/services/session.service';
+import { WebsocketService } from 'src/app/shared/services/websocket.service';
 
 @Component({
 	selector: 'mig-operator',
@@ -22,7 +23,8 @@ export class OperatorComponent implements OnInit, OnDestroy {
 	constructor(
 		private operatorService: OperatorService,
 		private messageService: MessageService,
-		private sessionService: SessionService
+		private sessionService: SessionService,
+		private websocketService: WebsocketService
 	) {
 		this.destroy$ = new Subject<void>();
 		this.actionButton = true;
@@ -44,12 +46,14 @@ export class OperatorComponent implements OnInit, OnDestroy {
 				this.messageService.add({ key: 'responseInfo', severity: 'success', detail: 'Saved' });
 				this.actionButton = false;
 				this.sessionService.disconnectClientFromSession(this.sessionId).subscribe(() => {});
+				this.websocketService.disconnect();
 			});
 	}
 
 	private initializeListeners(): void {
 		this.sessionService.getSessionId().subscribe((value: string) => {
 			this.sessionId = value;
+			this.websocketService.connectOperator(this.sessionId);
 		});
 	}
 }

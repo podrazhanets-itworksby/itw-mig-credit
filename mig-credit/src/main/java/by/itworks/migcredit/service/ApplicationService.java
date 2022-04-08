@@ -12,11 +12,11 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OperatorService {
+public class ApplicationService {
 
 	private final ApplicationRepository applicationRepository;
 
-	public void saveApplication(ApplicationDto dto, UUID sessionId) {
+	public Long saveApplication(ApplicationDto dto, UUID sessionId) {
 		Application app = new Application();
 		app.setFirstname(dto.firstname);
 		app.setLastname(dto.lastname);
@@ -39,7 +39,7 @@ public class OperatorService {
 		app.setAverageIncome(dto.averageIncome);
 		app.setSessionId(sessionId);
 
-		applicationRepository.save(app);
+		return applicationRepository.save(app).getId();
 	}
 
 }

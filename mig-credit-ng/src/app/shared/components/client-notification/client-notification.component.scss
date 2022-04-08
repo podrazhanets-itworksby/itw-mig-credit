@@ -1,0 +1,16 @@
+:host{
+    .client-notification {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 100%;
+        .notification {
+            height: max-content;
+
+            .btn-ok{
+                margin-top: 2rem;
+            }
+        }
+    }
+}

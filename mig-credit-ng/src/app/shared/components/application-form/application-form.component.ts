@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { Application } from 'src/app/shared/model/application.model';
@@ -28,7 +28,7 @@ import { DateUtils } from 'src/app/shared/utils/date-utils';
 	styleUrls: ['./application-form.component.scss'],
 	providers: [ConfirmationService],
 })
-export class ApplicationFormComponent implements OnInit, OnDestroy {
+export class ApplicationFormComponent implements OnInit {
 	@Input() public editMode: boolean;
 	@Input() public sessionId: string;
 	@Input() public actionButton: boolean;
@@ -53,6 +53,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 	public confirmationRequestText: string;
 	public confirmationRequestValue: boolean;
 	public confirmationFieldDisabled: boolean;
+	public confirmationRequestSended: boolean;
 
 	private currentApplication: Application;
 	private dateFields: Set<string>;
@@ -83,6 +84,7 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		this.actionButton = false;
 		this.saveApplicationEvent = new EventEmitter();
 		this.cancelApplicationEvent = new EventEmitter();
+		this.confirmationRequestSended = false;
 
 		this.dateFields = new Set();
 		this.dateFields.add('birthday');
@@ -101,10 +103,6 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 		this.initializeValues();
 		this.initializeWs();
 		this.form = this.generatePaymentForm();
-	}
-
-	public ngOnDestroy(): void {
-		this.websocketService.disconnect();
 	}
 
 	public submit(): void {}
@@ -220,6 +218,8 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 			this.form.get(mnemo)?.disable();
 		});
 
+		this.confirmationRequestSended = true;
+
 		this.currentApplication = this.prepareApplication();
 	}
 
@@ -276,14 +276,11 @@ export class ApplicationFormComponent implements OnInit, OnDestroy {
 
 	private initializeWs(): void {
 		if (this.editMode) {
-			this.websocketService.connectOperator(this.sessionId);
-
 			this.websocketService.subscribeToConfirmationResponse().subscribe((data: ConfirmationResponse) => {
 				this.clientAgree = data.isConfirmed;
+				this.confirmationRequestSended = !data.isConfirmed;
 			});
 		} else {
-			this.websocketService.connectClient(this.sessionId);
-
 			this.websocketService.subscribeToNewData().subscribe((data: NewData) => {
 				this.onNewDataReceived(data);
 			});

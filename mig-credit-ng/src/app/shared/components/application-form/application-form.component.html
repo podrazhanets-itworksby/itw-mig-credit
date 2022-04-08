@@ -442,10 +442,14 @@
 <div *ngIf="editMode && actionButton" class="action-container">
 	<div class="buttons-container">
 		<ng-container *ngIf="!clientAgree">
-			<div class="button-wrapper">
+			<div class="button-wrapper" *ngIf="!confirmationRequestSended">
 				<button type="button" class="p-button-outlined" (click)="sendConfirmationRequest()" pButton>
 					Завершить ввод данных
 				</button>
+			</div>
+
+			<div class="button-wrapper" *ngIf="confirmationRequestSended">
+				<button type="button" class="p-button-outlined" pButton>Ожидается подтверждение от клиента</button>
 			</div>
 		</ng-container>
 		<ng-container *ngIf="clientAgree">

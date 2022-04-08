@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
 import { Observable, Subject } from 'rxjs';
 import * as SockJS from 'sockjs-client';
+import { ClientNotificationData } from 'src/app/shared/model/client-notification-data.model';
 import { ConfirmationRequest } from 'src/app/shared/model/confirmation-request.model';
 import { ConfirmationResponse } from 'src/app/shared/model/confirmation-response.model';
 import { NewData } from 'src/app/shared/model/new-data.model';
@@ -15,12 +16,14 @@ export class WebsocketService {
 	private newDataSubject: Subject<NewData>;
 	private confirmationRequestSubject: Subject<ConfirmationRequest>;
 	private confirmationResponseSubject: Subject<ConfirmationResponse>;
+	private clientNotificationDataSubject: Subject<ClientNotificationData>;
 
 	public constructor() {
 		this.webSocketEndPoint = environment.webSocketEndPoint;
 		this.newDataSubject = new Subject();
 		this.confirmationRequestSubject = new Subject();
 		this.confirmationResponseSubject = new Subject();
+		this.clientNotificationDataSubject = new Subject();
 	}
 
 	public connect(): void {
@@ -41,6 +44,9 @@ export class WebsocketService {
 	}
 
 	public connectOperator(sessionId: string): void {
+		if (!sessionId) {
+			return;
+		}
 		this.connect();
 		this.stompClient.connect(
 			{},
@@ -54,6 +60,9 @@ export class WebsocketService {
 	}
 
 	public connectClient(sessionId: string): void {
+		if (!sessionId) {
+			return;
+		}
 		this.connect();
 		this.stompClient.connect(
 			{},
@@ -64,6 +73,10 @@ export class WebsocketService {
 
 				this.stompClient.subscribe('/confirmation-request/output/' + sessionId, (message) => {
 					this.confirmationRequestSubject.next(new ConfirmationRequest(JSON.parse(message.body)));
+				});
+
+				this.stompClient.subscribe('/client-notification/output/' + sessionId, (message) => {
+					this.clientNotificationDataSubject.next(new ClientNotificationData(JSON.parse(message.body)));
 				});
 			},
 			this.errorCallBack
@@ -82,9 +95,13 @@ export class WebsocketService {
 		return this.confirmationResponseSubject.asObservable();
 	}
 
+	public subscribeToClientNotificationData(): Observable<ClientNotificationData> {
+		return this.clientNotificationDataSubject.asObservable();
+	}
+
 	public disconnect(): void {
 		if (this.stompClient !== null) {
-			this.stompClient.disconnect();
+			this.stompClient.deactivate();
 		}
 	}
 
